@@ -1,652 +1,853 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TradeSkills — Settings</title>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>TradeSkills — Settings</title>
 
-    :root {
-      --bg: #f5f5f4;
-      --white: #ffffff;
-      --border: #e2e2df;
-      --text: #1c1c1a;
-      --muted: #888884;
-      --accent: #2563eb;
-      --danger: #dc2626;
-      --warn: #d97706;
-      --success: #16a34a;
-      --radius: 6px;
-    }
+    <!-- Google Fonts: IBM Plex Sans for UI text, IBM Plex Mono for numeric values -->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 
-    body {
-      font-family: 'IBM Plex Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 14px;
-      line-height: 1.5;
-    }
+    <style>
+        /* ── RESET ─────────────────────────────────────────────────────────────
+           Remove default browser margin/padding and use border-box sizing
+           so padding is included within element widths rather than added on top */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    a { text-decoration: none; color: inherit; }
-    .layout { display: flex; min-height: 100vh; }
+        /* ── DESIGN TOKENS ──────────────────────────────────────────────────────
+           CSS variables used throughout for consistent colour and spacing.
+           Shared with admin_dashboard.html — keep in sync if updating. */
+        :root {
+          --bg: #f5f5f4;       /* Page background — off-white */
+          --white: #ffffff;    /* Card / sidebar surface */
+          --border: #e2e2df;   /* Subtle divider lines */
+          --text: #1c1c1a;     /* Primary text */
+          --muted: #888884;    /* Secondary / placeholder text */
+          --accent: #2563eb;   /* Blue — active states, primary buttons */
+          --danger: #dc2626;   /* Red — destructive actions */
+          --warn: #d97706;     /* Amber — warnings */
+          --success: #16a34a;  /* Green — positive / saved states */
+          --radius: 6px;       /* Consistent border-radius across all components */
+        }
 
-    /* SIDEBAR */
-    .sidebar {
-      width: 200px;
-      background: var(--white);
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      position: fixed;
-      top: 0; left: 0; bottom: 0;
-      padding: 24px 0;
-    }
+        /* ── BASE TYPOGRAPHY ────────────────────────────────────────────────── */
+        body {
+          font-family: 'IBM Plex Sans', sans-serif;
+          background: var(--bg);
+          color: var(--text);
+          font-size: 14px;
+          line-height: 1.5;
+        }
 
-    .logo {
-      padding: 0 20px 20px;
-      border-bottom: 1px solid var(--border);
-      font-weight: 600;
-      font-size: 15px;
-    }
+        /* Strip underline from links and inherit parent colour by default */
+        a { text-decoration: none; color: inherit; }
 
-    .logo span {
-      display: block;
-      font-size: 10px;
-      font-weight: 500;
-      color: var(--muted);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-top: 2px;
-    }
+        /* Full-height flex container — sidebar sits alongside main content */
+        .layout { display: flex; min-height: 100vh; }
 
-    nav { padding: 16px 12px; flex: 1; }
 
-    nav a {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 8px;
-      border-radius: var(--radius);
-      color: var(--muted);
-      font-size: 13.5px;
-      transition: background .1s, color .1s;
-    }
+        /* ── SIDEBAR ────────────────────────────────────────────────────────────
+           Identical to the dashboard sidebar — same fixed left-hand navigation */
+        .sidebar {
+          width: 200px;
+          background: var(--white);
+          border-right: 1px solid var(--border);
+          display: flex;
+          flex-direction: column;
+          position: fixed;
+          top: 0; left: 0; bottom: 0;
+          padding: 24px 0;
+        }
 
-    nav a:hover { background: var(--bg); color: var(--text); }
-    nav a.active { background: var(--bg); color: var(--accent); font-weight: 500; }
+        /* App name and portal label at the top of the sidebar */
+        .logo {
+          padding: 0 20px 20px;
+          border-bottom: 1px solid var(--border);
+          font-weight: 600;
+          font-size: 15px;
+        }
 
-    .section-label {
-      font-size: 10px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--muted);
-      padding: 14px 8px 4px;
-      font-weight: 500;
-    }
+        /* "Admin Portal" subtitle beneath the wordmark */
+        .logo span {
+          display: block;
+          font-size: 10px;
+          font-weight: 500;
+          color: var(--muted);
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          margin-top: 2px;
+        }
 
-    .badge {
-      margin-left: auto;
-      background: #fee2e2;
-      color: var(--danger);
-      font-size: 10px;
-      font-weight: 600;
-      padding: 1px 6px;
-      border-radius: 99px;
-    }
+        /* Nav fills available sidebar height, footer stays at the bottom */
+        nav { padding: 16px 12px; flex: 1; }
 
-    .sidebar-footer {
-      padding: 16px 20px 0;
-      border-top: 1px solid var(--border);
-      font-size: 12.5px;
-      color: var(--muted);
-    }
+        /* Individual nav links */
+        nav a {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 7px 8px;
+          border-radius: var(--radius);
+          color: var(--muted);
+          font-size: 13.5px;
+          transition: background .1s, color .1s;
+        }
 
-    .sidebar-footer strong { display: block; color: var(--text); font-weight: 500; }
+        nav a:hover { background: var(--bg); color: var(--text); }
 
-    /* MAIN */
-    .main { margin-left: 200px; flex: 1; }
+        /* Active page link highlighted in accent blue */
+        nav a.active { background: var(--bg); color: var(--accent); font-weight: 500; }
 
-    .topbar {
-      background: var(--white);
-      border-bottom: 1px solid var(--border);
-      padding: 0 28px;
-      height: 52px;
-      display: flex;
-      align-items: center;
-    }
+        /* Small uppercase group label for nav sections */
+        .section-label {
+          font-size: 10px;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          color: var(--muted);
+          padding: 14px 8px 4px;
+          font-weight: 500;
+        }
 
-    .topbar h1 { font-size: 14px; font-weight: 600; }
+        /* Red pill badge showing unread report count */
+        .badge {
+          margin-left: auto;
+          background: #fee2e2;
+          color: var(--danger);
+          font-size: 10px;
+          font-weight: 600;
+          padding: 1px 6px;
+          border-radius: 99px;
+        }
 
-    .content { padding: 28px; display: flex; gap: 24px; align-items: flex-start; }
+        /* Logged-in admin info pinned to the sidebar bottom */
+        .sidebar-footer {
+          padding: 16px 20px 0;
+          border-top: 1px solid var(--border);
+          font-size: 12.5px;
+          color: var(--muted);
+        }
 
-    /* SETTINGS NAV */
-    .settings-nav {
-      width: 180px;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
+        .sidebar-footer strong { display: block; color: var(--text); font-weight: 500; }
 
-    .settings-nav a {
-      display: block;
-      padding: 7px 10px;
-      border-radius: var(--radius);
-      font-size: 13.5px;
-      color: var(--muted);
-      transition: background .1s, color .1s;
-    }
 
-    .settings-nav a:hover { background: var(--white); color: var(--text); }
-    .settings-nav a.active { background: var(--white); color: var(--accent); font-weight: 500; border: 1px solid var(--border); }
+        /* ── MAIN CONTENT AREA ──────────────────────────────────────────────────
+           Offset from the fixed sidebar */
+        .main { margin-left: 200px; flex: 1; }
 
-    /* PANELS */
-    .panels { flex: 1; display: flex; flex-direction: column; gap: 16px; }
+        /* Page title bar — no search input on settings (unlike dashboard) */
+        .topbar {
+          background: var(--white);
+          border-bottom: 1px solid var(--border);
+          padding: 0 28px;
+          height: 52px;
+          display: flex;
+          align-items: center;
+        }
 
-    .card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
+        .topbar h1 { font-size: 14px; font-weight: 600; }
 
-    .card-head {
-      padding: 14px 20px;
-      border-bottom: 1px solid var(--border);
-    }
+        /* Settings layout: secondary nav on the left, panels on the right */
+        .content { padding: 28px; display: flex; gap: 24px; align-items: flex-start; }
 
-    .card-head h2 { font-size: 13px; font-weight: 600; }
-    .card-head p { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-    /* FORM ROWS */
-    .form-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 20px;
-      border-bottom: 1px solid var(--border);
-      gap: 24px;
-    }
+        /* ── SETTINGS SECONDARY NAV ─────────────────────────────────────────────
+           Vertical list of section links (Profile, Security, Notifications…).
+           JS showSection() updates the active class and shows the matching panel. */
+        .settings-nav {
+          width: 180px;
+          flex-shrink: 0;   /* Prevent nav from shrinking when panels are wide */
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
 
-    .form-row:last-child { border-bottom: none; }
+        .settings-nav a {
+          display: block;
+          padding: 7px 10px;
+          border-radius: var(--radius);
+          font-size: 13.5px;
+          color: var(--muted);
+          transition: background .1s, color .1s;
+        }
 
-    .form-label { font-size: 13px; font-weight: 500; }
-    .form-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+        .settings-nav a:hover { background: var(--white); color: var(--text); }
 
-    .form-control { flex-shrink: 0; }
+        /* Active section link gains a border and accent colour */
+        .settings-nav a.active {
+          background: var(--white);
+          color: var(--accent);
+          font-weight: 500;
+          border: 1px solid var(--border);
+        }
 
-    input[type="text"],
-    input[type="email"],
-    input[type="password"],
-    input[type="number"],
-    select {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 7px 10px;
-      font-family: inherit;
-      font-size: 13px;
-      color: var(--text);
-      outline: none;
-      width: 220px;
-    }
 
-    input:focus, select:focus { border-color: var(--accent); }
-    input::placeholder { color: var(--muted); }
+        /* ── SETTINGS PANELS AREA ───────────────────────────────────────────────
+           Holds all section panels stacked vertically.
+           Only the active section's div is visible at a time (controlled by JS). */
+        .panels { flex: 1; display: flex; flex-direction: column; gap: 16px; }
 
-    /* TOGGLE */
-    .toggle {
-      position: relative;
-      width: 36px;
-      height: 20px;
-      flex-shrink: 0;
-    }
 
-    .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+        /* ── CARD ───────────────────────────────────────────────────────────────
+           Reusable white bordered container — used for each settings group */
+        .card {
+          background: var(--white);
+          border: 1px solid var(--border);
+          border-radius: var(--radius);
+          overflow: hidden;
+        }
 
-    .toggle-track {
-      position: absolute;
-      inset: 0;
-      background: var(--border);
-      border-radius: 99px;
-      cursor: pointer;
-      transition: background .2s;
-    }
+        /* Card header: title + optional description */
+        .card-head {
+          padding: 14px 20px;
+          border-bottom: 1px solid var(--border);
+        }
 
-    .toggle-track::after {
-      content: '';
-      position: absolute;
-      top: 3px; left: 3px;
-      width: 14px; height: 14px;
-      border-radius: 50%;
-      background: var(--white);
-      transition: transform .2s;
-      box-shadow: 0 1px 3px rgba(0,0,0,.15);
-    }
+        .card-head h2 { font-size: 13px; font-weight: 600; }
+        .card-head p  { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-    .toggle input:checked + .toggle-track { background: var(--accent); }
-    .toggle input:checked + .toggle-track::after { transform: translateX(16px); }
 
-    /* BUTTONS */
-    .btn {
-      display: inline-block;
-      padding: 7px 16px;
-      border-radius: var(--radius);
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      color: var(--text);
-      transition: opacity .1s;
-    }
+        /* ── FORM ROWS ──────────────────────────────────────────────────────────
+           Each setting is a horizontal row: label/description on the left,
+           input control (text field, select, or toggle) on the right. */
+        .form-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 14px 20px;
+          border-bottom: 1px solid var(--border);
+          gap: 24px;
+        }
 
-    .btn:hover { opacity: .7; }
-    .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-    .btn-danger { background: #fee2e2; color: var(--danger); border-color: #fecaca; }
+        /* Remove bottom border from the last row in a card */
+        .form-row:last-child { border-bottom: none; }
 
-    .card-foot {
-      padding: 14px 20px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-    }
+        /* Setting name — bold, full contrast */
+        .form-label { font-size: 13px; font-weight: 500; }
 
-    /* DANGER ZONE */
-    .danger-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 20px;
-      border-bottom: 1px solid var(--border);
-      gap: 24px;
-    }
+        /* Explanatory hint text below the label */
+        .form-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-    .danger-row:last-child { border-bottom: none; }
+        /* Prevents the input/control from shrinking when the label is long */
+        .form-control { flex-shrink: 0; }
 
-    /* TOAST */
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: var(--text);
-      color: var(--white);
-      padding: 10px 18px;
-      border-radius: var(--radius);
-      font-size: 13px;
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity .2s, transform .2s;
-      pointer-events: none;
-      z-index: 200;
-    }
+        /* ── FORM INPUTS ─────────────────────────────────────────────────────
+           Consistent styling for text, email, password, number inputs and selects */
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        select {
+          background: var(--bg);
+          border: 1px solid var(--border);
+          border-radius: var(--radius);
+          padding: 7px 10px;
+          font-family: inherit;
+          font-size: 13px;
+          color: var(--text);
+          outline: none;
+          width: 220px;
+        }
 
-    .toast.show { opacity: 1; transform: translateY(0); }
-  </style>
+        /* Blue border on focus for accessibility and visual feedback */
+        input:focus, select:focus { border-color: var(--accent); }
+        input::placeholder { color: var(--muted); }
+
+
+        /* ── TOGGLE SWITCH ──────────────────────────────────────────────────────
+           Custom CSS toggle replacing a standard checkbox.
+           Structure: <label class="toggle"> <input type="checkbox"> <span class="toggle-track"> </label>
+           The hidden checkbox drives the checked state; the span is the visual track. */
+        .toggle {
+          position: relative;
+          width: 36px;
+          height: 20px;
+          flex-shrink: 0;
+        }
+
+        /* Hide the native checkbox — the span provides the visual */
+        .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+
+        /* The pill-shaped track — grey when off */
+        .toggle-track {
+          position: absolute;
+          inset: 0;
+          background: var(--border);
+          border-radius: 99px;
+          cursor: pointer;
+          transition: background .2s;
+        }
+
+        /* The white circular knob, positioned via ::after pseudo-element */
+        .toggle-track::after {
+          content: '';
+          position: absolute;
+          top: 3px; left: 3px;
+          width: 14px; height: 14px;
+          border-radius: 50%;
+          background: var(--white);
+          transition: transform .2s;
+          box-shadow: 0 1px 3px rgba(0,0,0,.15);
+        }
+
+        /* When checkbox is checked: turn track blue and slide knob to the right */
+        .toggle input:checked + .toggle-track { background: var(--accent); }
+        .toggle input:checked + .toggle-track::after { transform: translateX(16px); }
+
+
+        /* ── BUTTONS ────────────────────────────────────────────────────────────
+           Same button system as the dashboard — base style + colour variants */
+        .btn {
+          display: inline-block;
+          padding: 7px 16px;
+          border-radius: var(--radius);
+          font-family: inherit;
+          font-size: 13px;
+          font-weight: 500;
+          cursor: pointer;
+          border: 1px solid var(--border);
+          background: var(--bg);
+          color: var(--text);
+          transition: opacity .1s;
+        }
+
+        .btn:hover { opacity: .7; }
+
+        .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .btn-danger  { background: #fee2e2; color: var(--danger); border-color: #fecaca; }
+
+        /* Card footer: right-aligned save/cancel buttons */
+        .card-foot {
+          padding: 14px 20px;
+          border-top: 1px solid var(--border);
+          display: flex;
+          justify-content: flex-end;
+          gap: 8px;
+        }
+
+
+        /* ── DANGER ZONE ROWS ───────────────────────────────────────────────────
+           Same layout as form-row but used in the Danger Zone section.
+           Each row pairs a description with a red destructive action button. */
+        .danger-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 14px 20px;
+          border-bottom: 1px solid var(--border);
+          gap: 24px;
+        }
+
+        .danger-row:last-child { border-bottom: none; }
+
+
+        /* ── TOAST NOTIFICATION ─────────────────────────────────────────────────
+           Brief confirmation message that appears bottom-right after saving.
+           JS adds/removes the "show" class to fade it in and out. */
+        .toast {
+          position: fixed;
+          bottom: 24px;
+          right: 24px;
+          background: var(--text);
+          color: var(--white);
+          padding: 10px 18px;
+          border-radius: var(--radius);
+          font-size: 13px;
+          opacity: 0;
+          transform: translateY(8px);
+          transition: opacity .2s, transform .2s;
+          pointer-events: none;   /* Invisible to clicks when hidden */
+          z-index: 200;
+        }
+
+        /* Visible state — added and removed by showToast() */
+        .toast.show { opacity: 1; transform: translateY(0); }
+    </style>
 </head>
 <body>
 
 <div class="layout">
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="logo">
-      TradeSkills
-      <span>Admin Portal</span>
-    </div>
-    <nav>
-      <div class="section-label">Main</div>
-      <a href="../../Downloads/admin_dashboard.html">Dashboard</a>
-
-      <div class="section-label">Moderation</div>
-      <a href="#">Reports <span class="badge">7</span></a>
-      <a href="#">Security Logs</a>
-
-      <div class="section-label">Platform</div>
-      <a href="#">Users</a>
-      <a href="#">Credits</a>
-      <a href="#">Lessons</a>
-
-      <div class="section-label">Account</div>
-      <a href="#" class="active">Settings</a>
-      <a href="#">Log out</a>
-    </nav>
-    <div class="sidebar-footer">
-      <strong>Admin</strong>
-      Administrator
-    </div>
-  </aside>
-
-  <!-- MAIN -->
-  <div class="main">
-    <div class="topbar">
-      <h1>Settings</h1>
-    </div>
-
-    <div class="content">
-
-      <!-- SETTINGS NAV -->
-      <nav class="settings-nav">
-        <a href="#" class="active" onclick="showSection('profile', this)">Profile</a>
-        <a href="#" onclick="showSection('security', this)">Security</a>
-        <a href="#" onclick="showSection('notifications', this)">Notifications</a>
-        <a href="#" onclick="showSection('platform', this)">Platform</a>
-        <a href="#" onclick="showSection('danger', this)">Danger Zone</a>
-      </nav>
-
-      <!-- PANELS -->
-      <div class="panels">
-
-        <!-- PROFILE -->
-        <div id="section-profile">
-          <div class="card">
-            <div class="card-head">
-              <h2>Profile</h2>
-              <p>Update your admin account details.</p>
-            </div>
-            <div class="form-row">
-              <div>
-                <div class="form-label">Full Name</div>
-              </div>
-              <div class="form-control">
-                <input type="text" value="Admin" placeholder="Full name"/>
-              </div>
-            </div>
-            <div class="form-row">
-              <div>
-                <div class="form-label">Email Address</div>
-                <div class="form-sub">Used for login and system alerts.</div>
-              </div>
-              <div class="form-control">
-                <input type="email" value="admin@tradeskills.com"/>
-              </div>
-            </div>
-            <div class="form-row">
-              <div>
-                <div class="form-label">Role</div>
-              </div>
-              <div class="form-control">
-                <input type="text" value="Administrator" disabled style="color:var(--muted)"/>
-              </div>
-            </div>
-            <div class="card-foot">
-              <button class="btn" onclick="showToast('No changes made.')">Cancel</button>
-              <button class="btn btn-primary" onclick="showToast('Profile saved.')">Save Changes</button>
-            </div>
-          </div>
+    <!-- ══ SIDEBAR ══════════════════════════════════════════════════════════
+         Same sidebar structure as the dashboard.
+         "Settings" nav link has the active class on this page. -->
+    <aside class="sidebar">
+        <div class="logo">
+            TradeSkills
+            <span>Admin Portal</span>
         </div>
 
-        <!-- SECURITY -->
-        <div id="section-security" style="display:none">
-          <div class="card">
-            <div class="card-head">
-              <h2>Password</h2>
-              <p>Must be at least 10 characters with a number, uppercase, and special character.</p>
-            </div>
-            <div class="form-row">
-              <div><div class="form-label">Current Password</div></div>
-              <div class="form-control">
-                <input type="password" placeholder="••••••••••"/>
-              </div>
-            </div>
-            <div class="form-row">
-              <div><div class="form-label">New Password</div></div>
-              <div class="form-control">
-                <input type="password" placeholder="••••••••••"/>
-              </div>
-            </div>
-            <div class="form-row">
-              <div><div class="form-label">Confirm New Password</div></div>
-              <div class="form-control">
-                <input type="password" placeholder="••••••••••"/>
-              </div>
-            </div>
-            <div class="card-foot">
-              <button class="btn btn-primary" onclick="showToast('Password updated.')">Update Password</button>
-            </div>
-          </div>
+        <nav>
+            <div class="section-label">Main</div>
+            <a href="admin_dashboard.html">Dashboard</a>
 
-          <div class="card">
-            <div class="card-head">
-              <h2>Login Security</h2>
-              <p>Account lockout and session settings.</p>
-            </div>
-            <div class="form-row">
-              <div>
-                <div class="form-label">Account lockout threshold</div>
-                <div class="form-sub">Number of failed attempts before lockout.</div>
-              </div>
-              <div class="form-control">
-                <select>
-                  <option>3 attempts</option>
-                  <option selected>5 attempts</option>
-                  <option>10 attempts</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-row">
-              <div>
-                <div class="form-label">Lockout duration</div>
-                <div class="form-sub">How long accounts are locked after threshold.</div>
-              </div>
-              <div class="form-control">
-                <select>
-                  <option>1 hour</option>
-                  <option selected>24 hours</option>
-                  <option>48 hours</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-row">
-              <div>
-                <div class="form-label">Require CAPTCHA after failed logins</div>
-                <div class="form-sub">Triggers after 3 consecutive failures.</div>
-              </div>
-              <div class="form-control">
-                <label class="toggle">
-                  <input type="checkbox" checked/>
-                  <span class="toggle-track"></span>
-                </label>
-              </div>
-            </div>
-            <div class="card-foot">
-              <button class="btn btn-primary" onclick="showToast('Security settings saved.')">Save Changes</button>
-            </div>
-          </div>
+            <div class="section-label">Moderation</div>
+            <a href="#">Reports <span class="badge">7</span></a>
+            <a href="#">Security Logs</a>
+
+            <div class="section-label">Platform</div>
+            <a href="#">Users</a>
+            <a href="#">Credits</a>
+            <a href="#">Lessons</a>
+
+            <div class="section-label">Account</div>
+            <a href="#" class="active">Settings</a>  <!-- Active on this page -->
+            <a href="#">Log out</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <strong>Admin</strong>
+            Administrator
+        </div>
+    </aside>
+
+
+    <!-- ══ MAIN CONTENT ══════════════════════════════════════════════════════ -->
+    <div class="main">
+
+        <!-- Simple topbar — just the page title, no search on settings -->
+        <div class="topbar">
+            <h1>Settings</h1>
         </div>
 
-        <!-- NOTIFICATIONS -->
-        <div id="section-notifications" style="display:none">
-          <div class="card">
-            <div class="card-head">
-              <h2>Email Notifications</h2>
-              <p>Choose which events send an email alert to the admin.</p>
-            </div>
-            <div class="form-row">
-              <div>
-                <div class="form-label">New user report filed</div>
-                <div class="form-sub">Receive an email when a user submits a report.</div>
-              </div>
-              <div class="form-control">
-                <label class="toggle"><input type="checkbox" checked/><span class="toggle-track"></span></label>
-              </div>
-            </div>
-            <div class="form-row">
-              <div>
-                <div class="form-label">Account locked out</div>
-                <div class="form-sub">Notified when a user account is locked after failed logins.</div>
-              </div>
-              <div class="form-control">
-                <label class="toggle"><input type="checkbox" checked/><span class="toggle-track"></span></label>
-              </div>
-            </div>
-            <div class="form-row">
-              <div>
-                <div class="form-label">High-severity security event</div>
-                <div class="form-sub">XSS, SQL injection attempts, or similar threats.</div>
-              </div>
-              <div class="form-control">
-                <label class="toggle"><input type="checkbox" checked/><span class="toggle-track"></span></label>
-              </div>
-            </div>
-            <div class="form-row">
-              <div>
-                <div class="form-label">Fortnightly top-up completed</div>
-                <div class="form-sub">Summary email after each credit top-up run.</div>
-              </div>
-              <div class="form-control">
-                <label class="toggle"><input type="checkbox"/><span class="toggle-track"></span></label>
-              </div>
-            </div>
-            <div class="form-row">
-              <div>
-                <div class="form-label">New user registration</div>
-                <div class="form-sub">Notified each time a new account is created.</div>
-              </div>
-              <div class="form-control">
-                <label class="toggle"><input type="checkbox"/><span class="toggle-track"></span></label>
-              </div>
-            </div>
-            <div class="card-foot">
-              <button class="btn btn-primary" onclick="showToast('Notification preferences saved.')">Save Changes</button>
-            </div>
-          </div>
-        </div>
+        <!-- Two-column layout: secondary nav on the left, panels on the right -->
+        <div class="content">
 
-        <!-- PLATFORM -->
-        <div id="section-platform" style="display:none">
-          <div class="card">
-            <div class="card-head">
-              <h2>Credits</h2>
-              <p>Configure how credits are awarded and managed.</p>
-            </div>
-            <div class="form-row">
-              <div>
-                <div class="form-label">Starting credit balance</div>
-                <div class="form-sub">Credits awarded to newly registered accounts.</div>
-              </div>
-              <div class="form-control">
-                <input type="number" value="5" style="width:100px"/>
-              </div>
-            </div>
-            <div class="form-row">
-              <div>
-                <div class="form-label">Fortnightly top-up amount</div>
-                <div class="form-sub">Credits added per active user every 14 days.</div>
-              </div>
-              <div class="form-control">
-                <input type="number" value="1" style="width:100px"/>
-              </div>
-            </div>
-            <div class="form-row">
-              <div>
-                <div class="form-label">Enable fortnightly top-up</div>
-                <div class="form-sub">Runs at 00:00 every 14 days for active users.</div>
-              </div>
-              <div class="form-control">
-                <label class="toggle"><input type="checkbox" checked/><span class="toggle-track"></span></label>
-              </div>
-            </div>
-            <div class="card-foot">
-              <button class="btn btn-primary" onclick="showToast('Platform settings saved.')">Save Changes</button>
-            </div>
-          </div>
+            <!-- ── SETTINGS SECONDARY NAV ────────────────────────────────────────
+                 Clicking a link calls showSection(id, el) which hides all panels
+                 and shows the one matching the given id. -->
+            <nav class="settings-nav">
+                <a href="#" class="active" onclick="showSection('profile', this)">Profile</a>
+                <a href="#"                onclick="showSection('security', this)">Security</a>
+                <a href="#"                onclick="showSection('notifications', this)">Notifications</a>
+                <a href="#"                onclick="showSection('platform', this)">Platform</a>
+                <a href="#"                onclick="showSection('danger', this)">Danger Zone</a>
+            </nav>
 
-          <div class="card">
-            <div class="card-head">
-              <h2>User Accounts</h2>
-              <p>Registration and access controls.</p>
-            </div>
-            <div class="form-row">
-              <div>
-                <div class="form-label">Minimum age to register</div>
-                <div class="form-sub">Users below this age will not be permitted to sign up.</div>
-              </div>
-              <div class="form-control">
-                <select>
-                  <option>13</option>
-                  <option selected>16</option>
-                  <option>18</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-row">
-              <div>
-                <div class="form-label">Allow new registrations</div>
-                <div class="form-sub">Disable to temporarily pause sign-ups.</div>
-              </div>
-              <div class="form-control">
-                <label class="toggle"><input type="checkbox" checked/><span class="toggle-track"></span></label>
-              </div>
-            </div>
-            <div class="card-foot">
-              <button class="btn btn-primary" onclick="showToast('Account settings saved.')">Save Changes</button>
-            </div>
-          </div>
-        </div>
 
-        <!-- DANGER ZONE -->
-        <div id="section-danger" style="display:none">
-          <div class="card">
-            <div class="card-head">
-              <h2>Danger Zone</h2>
-              <p>These actions are irreversible. Proceed with caution.</p>
-            </div>
-            <div class="danger-row">
-              <div>
-                <div class="form-label">Clear all security logs</div>
-                <div class="form-sub">Permanently deletes all login and activity logs.</div>
-              </div>
-              <button class="btn btn-danger" onclick="confirmAction('Clear all security logs?', 'Logs cleared.')">Clear Logs</button>
-            </div>
-            <div class="danger-row">
-              <div>
-                <div class="form-label">Reset all user credits to zero</div>
-                <div class="form-sub">Sets every user's credit balance to 0. Cannot be undone.</div>
-              </div>
-              <button class="btn btn-danger" onclick="confirmAction('Reset all credits to zero?', 'Credits reset.')">Reset Credits</button>
-            </div>
-            <div class="danger-row">
-              <div>
-                <div class="form-label">Delete all unresolved reports</div>
-                <div class="form-sub">Permanently removes all reports marked as New or Ongoing.</div>
-              </div>
-              <button class="btn btn-danger" onclick="confirmAction('Delete all unresolved reports?', 'Reports deleted.')">Delete Reports</button>
-            </div>
-          </div>
-        </div>
+            <!-- ── ALL SECTION PANELS ────────────────────────────────────────────
+                 Each section has id="section-{name}". Only one is visible at a time.
+                 The profile section is shown by default; all others start hidden. -->
+            <div class="panels">
 
-      </div>
-    </div>
-  </div>
-</div>
 
+                <!-- ════════════════════════════════════════════════════════════════
+                     PROFILE SECTION
+                     Allows the admin to update their display name and email.
+                     Role is shown but disabled — cannot be changed here. (FR21)
+                     ════════════════════════════════════════════════════════════════ -->
+                <div id="section-profile">
+                    <div class="card">
+                        <div class="card-head">
+                            <h2>Profile</h2>
+                            <p>Update your admin account details.</p>
+                        </div>
+
+                        <!-- Full name field -->
+                        <div class="form-row">
+                            <div><div class="form-label">Full Name</div></div>
+                            <div class="form-control">
+                                <input type="text" value="Admin" placeholder="Full name"/>
+                            </div>
+                        </div>
+
+                        <!-- Email — used for login and system alert emails (FR14, FR15) -->
+                        <div class="form-row">
+                            <div>
+                                <div class="form-label">Email Address</div>
+                                <div class="form-sub">Used for login and system alerts.</div>
+                            </div>
+                            <div class="form-control">
+                                <input type="email" value="admin@tradeskills.com"/>
+                            </div>
+                        </div>
+
+                        <!-- Role is read-only — admins cannot self-assign roles -->
+                        <div class="form-row">
+                            <div><div class="form-label">Role</div></div>
+                            <div class="form-control">
+                                <input type="text" value="Administrator" disabled style="color:var(--muted)"/>
+                            </div>
+                        </div>
+
+                        <!-- Footer: Cancel discards changes, Save submits them -->
+                        <div class="card-foot">
+                            <button class="btn"         onclick="showToast('No changes made.')">Cancel</button>
+                            <button class="btn btn-primary" onclick="showToast('Profile saved.')">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- ════════════════════════════════════════════════════════════════
+                     SECURITY SECTION — hidden by default
+                     Password change and login lockout configuration (NFR1)
+                     ════════════════════════════════════════════════════════════════ -->
+                <div id="section-security" style="display:none">
+
+                    <!-- Password change card -->
+                    <div class="card">
+                        <div class="card-head">
+                            <h2>Password</h2>
+                            <!-- Password requirements as per NFR1 -->
+                            <p>Must be at least 10 characters with a number, uppercase, and special character.</p>
+                        </div>
+
+                        <!-- Current password verification prevents unauthorised changes -->
+                        <div class="form-row">
+                            <div><div class="form-label">Current Password</div></div>
+                            <div class="form-control">
+                                <input type="password" placeholder="••••••••••"/>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div><div class="form-label">New Password</div></div>
+                            <div class="form-control">
+                                <input type="password" placeholder="••••••••••"/>
+                            </div>
+                        </div>
+
+                        <!-- Confirmation field prevents typos in the new password -->
+                        <div class="form-row">
+                            <div><div class="form-label">Confirm New Password</div></div>
+                            <div class="form-control">
+                                <input type="password" placeholder="••••••••••"/>
+                            </div>
+                        </div>
+
+                        <div class="card-foot">
+                            <button class="btn btn-primary" onclick="showToast('Password updated.')">Update Password</button>
+                        </div>
+                    </div>
+
+                    <!-- Login security card — lockout and CAPTCHA settings (NFR1) -->
+                    <div class="card">
+                        <div class="card-head">
+                            <h2>Login Security</h2>
+                            <p>Account lockout and session settings.</p>
+                        </div>
+
+                        <!-- Number of failed attempts before account is locked — spec default is 5 (NFR1) -->
+                        <div class="form-row">
+                            <div>
+                                <div class="form-label">Account lockout threshold</div>
+                                <div class="form-sub">Number of failed attempts before lockout.</div>
+                            </div>
+                            <div class="form-control">
+                                <select>
+                                    <option>3 attempts</option>
+                                    <option selected>5 attempts</option>  <!-- Default per NFR1 -->
+                                    <option>10 attempts</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- How long accounts remain locked — spec default is 24 hours (NFR1) -->
+                        <div class="form-row">
+                            <div>
+                                <div class="form-label">Lockout duration</div>
+                                <div class="form-sub">How long accounts are locked after threshold.</div>
+                            </div>
+                            <div class="form-control">
+                                <select>
+                                    <option>1 hour</option>
+                                    <option selected>24 hours</option>  <!-- Default per NFR1 -->
+                                    <option>48 hours</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- CAPTCHA appears after 3 failed logins (NFR1) -->
+                        <div class="form-row">
+                            <div>
+                                <div class="form-label">Require CAPTCHA after failed logins</div>
+                                <div class="form-sub">Triggers after 3 consecutive failures.</div>
+                            </div>
+                            <div class="form-control">
+                                <label class="toggle">
+                                    <input type="checkbox" checked/>  <!-- Enabled by default -->
+                                    <span class="toggle-track"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="card-foot">
+                            <button class="btn btn-primary" onclick="showToast('Security settings saved.')">Save Changes</button>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- ════════════════════════════════════════════════════════════════
+                     NOTIFICATIONS SECTION — hidden by default
+                     Controls which system events trigger an admin email alert.
+                     Email alerts for users are controlled separately in user settings (FR14, FR15).
+                     ════════════════════════════════════════════════════════════════ -->
+                <div id="section-notifications" style="display:none">
+                    <div class="card">
+                        <div class="card-head">
+                            <h2>Email Notifications</h2>
+                            <p>Choose which events send an email alert to the admin.</p>
+                        </div>
+
+                        <!-- Alert when a user files a new report — enabled by default -->
+                        <div class="form-row">
+                            <div>
+                                <div class="form-label">New user report filed</div>
+                                <div class="form-sub">Receive an email when a user submits a report.</div>
+                            </div>
+                            <div class="form-control">
+                                <label class="toggle"><input type="checkbox" checked/><span class="toggle-track"></span></label>
+                            </div>
+                        </div>
+
+                        <!-- Alert when an account is locked after too many failed logins (NFR1) -->
+                        <div class="form-row">
+                            <div>
+                                <div class="form-label">Account locked out</div>
+                                <div class="form-sub">Notified when a user account is locked after failed logins.</div>
+                            </div>
+                            <div class="form-control">
+                                <label class="toggle"><input type="checkbox" checked/><span class="toggle-track"></span></label>
+                            </div>
+                        </div>
+
+                        <!-- Alert on high-severity events like XSS or SQL injection attempts (NFR1) -->
+                        <div class="form-row">
+                            <div>
+                                <div class="form-label">High-severity security event</div>
+                                <div class="form-sub">XSS, SQL injection attempts, or similar threats.</div>
+                            </div>
+                            <div class="form-control">
+                                <label class="toggle"><input type="checkbox" checked/><span class="toggle-track"></span></label>
+                            </div>
+                        </div>
+
+                        <!-- Summary of the fortnightly credit top-up run (FR8) — off by default -->
+                        <div class="form-row">
+                            <div>
+                                <div class="form-label">Fortnightly top-up completed</div>
+                                <div class="form-sub">Summary email after each credit top-up run.</div>
+                            </div>
+                            <div class="form-control">
+                                <label class="toggle"><input type="checkbox"/><span class="toggle-track"></span></label>
+                            </div>
+                        </div>
+
+                        <!-- New user registration alert — off by default to avoid noise -->
+                        <div class="form-row">
+                            <div>
+                                <div class="form-label">New user registration</div>
+                                <div class="form-sub">Notified each time a new account is created.</div>
+                            </div>
+                            <div class="form-control">
+                                <label class="toggle"><input type="checkbox"/><span class="toggle-track"></span></label>
+                            </div>
+                        </div>
+
+                        <div class="card-foot">
+                            <button class="btn btn-primary" onclick="showToast('Notification preferences saved.')">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- ════════════════════════════════════════════════════════════════
+                     PLATFORM SECTION — hidden by default
+                     Controls credit behaviour and user account registration rules.
+                     ════════════════════════════════════════════════════════════════ -->
+                <div id="section-platform" style="display:none">
+
+                    <!-- Credits configuration card -->
+                    <div class="card">
+                        <div class="card-head">
+                            <h2>Credits</h2>
+                            <p>Configure how credits are awarded and managed.</p>
+                        </div>
+
+                        <!-- How many credits are given to a brand new account (FR10) -->
+                        <div class="form-row">
+                            <div>
+                                <div class="form-label">Starting credit balance</div>
+                                <div class="form-sub">Credits awarded to newly registered accounts.</div>
+                            </div>
+                            <div class="form-control">
+                                <input type="number" value="5" style="width:100px"/>  <!-- Default: 5 per FR10 -->
+                            </div>
+                        </div>
+
+                        <!-- Credits added per active user on each fortnightly top-up (FR8) -->
+                        <div class="form-row">
+                            <div>
+                                <div class="form-label">Fortnightly top-up amount</div>
+                                <div class="form-sub">Credits added per active user every 14 days.</div>
+                            </div>
+                            <div class="form-control">
+                                <input type="number" value="1" style="width:100px"/>  <!-- Default: 1 per FR8 -->
+                            </div>
+                        </div>
+
+                        <!-- Master toggle to enable or disable the fortnightly top-up job (FR8) -->
+                        <div class="form-row">
+                            <div>
+                                <div class="form-label">Enable fortnightly top-up</div>
+                                <div class="form-sub">Runs at 00:00 every 14 days for active users.</div>
+                            </div>
+                            <div class="form-control">
+                                <label class="toggle"><input type="checkbox" checked/><span class="toggle-track"></span></label>
+                            </div>
+                        </div>
+
+                        <div class="card-foot">
+                            <button class="btn btn-primary" onclick="showToast('Platform settings saved.')">Save Changes</button>
+                        </div>
+                    </div>
+
+                    <!-- User account registration settings card -->
+                    <div class="card">
+                        <div class="card-head">
+                            <h2>User Accounts</h2>
+                            <p>Registration and access controls.</p>
+                        </div>
+
+                        <!-- Minimum age gate — spec requires blocking users under 16 (FR3) -->
+                        <div class="form-row">
+                            <div>
+                                <div class="form-label">Minimum age to register</div>
+                                <div class="form-sub">Users below this age will not be permitted to sign up.</div>
+                            </div>
+                            <div class="form-control">
+                                <select>
+                                    <option>13</option>
+                                    <option selected>16</option>  <!-- Default per FR3 -->
+                                    <option>18</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Emergency toggle to pause all new sign-ups if needed -->
+                        <div class="form-row">
+                            <div>
+                                <div class="form-label">Allow new registrations</div>
+                                <div class="form-sub">Disable to temporarily pause sign-ups.</div>
+                            </div>
+                            <div class="form-control">
+                                <label class="toggle"><input type="checkbox" checked/><span class="toggle-track"></span></label>
+                            </div>
+                        </div>
+
+                        <div class="card-foot">
+                            <button class="btn btn-primary" onclick="showToast('Account settings saved.')">Save Changes</button>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- ════════════════════════════════════════════════════════════════
+                     DANGER ZONE SECTION — hidden by default
+                     Irreversible bulk admin actions. Each button triggers a
+                     browser confirm() dialog before proceeding.
+                     ════════════════════════════════════════════════════════════════ -->
+                <div id="section-danger" style="display:none">
+                    <div class="card">
+                        <div class="card-head">
+                            <h2>Danger Zone</h2>
+                            <p>These actions are irreversible. Proceed with caution.</p>
+                        </div>
+
+                        <!-- Wipe all security log entries from the database -->
+                        <div class="danger-row">
+                            <div>
+                                <div class="form-label">Clear all security logs</div>
+                                <div class="form-sub">Permanently deletes all login and activity logs.</div>
+                            </div>
+                            <button class="btn btn-danger" onclick="confirmAction('Clear all security logs?', 'Logs cleared.')">Clear Logs</button>
+                        </div>
+
+                        <!-- Reset every user's credit balance to 0 — cannot be undone -->
+                        <div class="danger-row">
+                            <div>
+                                <div class="form-label">Reset all user credits to zero</div>
+                                <div class="form-sub">Sets every user's credit balance to 0. Cannot be undone.</div>
+                            </div>
+                            <button class="btn btn-danger" onclick="confirmAction('Reset all credits to zero?', 'Credits reset.')">Reset Credits</button>
+                        </div>
+
+                        <!-- Bulk-delete all open reports (New + Ongoing) -->
+                        <div class="danger-row">
+                            <div>
+                                <div class="form-label">Delete all unresolved reports</div>
+                                <div class="form-sub">Permanently removes all reports marked as New or Ongoing.</div>
+                            </div>
+                            <button class="btn btn-danger" onclick="confirmAction('Delete all unresolved reports?', 'Reports deleted.')">Delete Reports</button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div><!-- end .panels -->
+        </div><!-- end .content -->
+    </div><!-- end .main -->
+</div><!-- end .layout -->
+
+
+<!-- ══ TOAST ═════════════════════════════════════════════════════════════
+     Brief confirmation message shown after a successful save action.
+     Text is injected by showToast() and the element fades out automatically. -->
 <div class="toast" id="toast"></div>
 
+
 <script>
-  function showSection(id, el) {
-    ['profile','security','notifications','platform','danger'].forEach(s => {
-      document.getElementById('section-' + s).style.display = s === id ? '' : 'none';
-    });
-    document.querySelectorAll('.settings-nav a').forEach(a => a.classList.remove('active'));
-    el.classList.add('active');
-    return false;
-  }
+    /**
+     * showSection(id, el)
+     * Switches the visible settings panel to the one matching the given id.
+     * Hides all other section divs and updates the active link styling.
+     * @param {string} id  - Section identifier ('profile', 'security', etc.)
+     * @param {Element} el - The nav link element that was clicked (for active class)
+     */
+    function showSection(id, el) {
+      // List of all section ids — update this if a new section is added
+      const sections = ['profile', 'security', 'notifications', 'platform', 'danger'];
 
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2200);
-  }
+      // Hide every section, then show only the selected one
+      sections.forEach(s => {
+        document.getElementById('section-' + s).style.display = s === id ? '' : 'none';
+      });
 
-  function confirmAction(question, successMsg) {
-    if (confirm(question)) showToast(successMsg);
-  }
+      // Remove active class from all nav links, then apply it to the clicked one
+      document.querySelectorAll('.settings-nav a').forEach(a => a.classList.remove('active'));
+      el.classList.add('active');
+
+      // Return false prevents the default anchor scroll behaviour
+      return false;
+    }
+
+    /**
+     * showToast(msg)
+     * Displays a brief confirmation toast notification in the bottom-right corner.
+     * The toast automatically disappears after 2.2 seconds.
+     * @param {string} msg - The message to display
+     */
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');                          // Trigger CSS fade-in transition
+      setTimeout(() => t.classList.remove('show'), 2200); // Fade out after 2.2s
+    }
+
+    /**
+     * confirmAction(question, successMsg)
+     * Shows a browser confirmation dialog before executing a destructive action.
+     * If the admin confirms, displays a toast with the success message.
+     * In production, the confirm callback should POST to the relevant Flask endpoint.
+     * @param {string} question    - Confirmation dialog text
+     * @param {string} successMsg  - Toast message shown on confirmation
+     */
+    function confirmAction(question, successMsg) {
+      if (confirm(question)) showToast(successMsg);
+    }
 </script>
 </body>
 </html>
